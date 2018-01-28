@@ -1,5 +1,8 @@
 GPU_GA/Debug
 GPU_GA/x64
+GPU_GA/.vs
+
+GPU_GA/*
 !GPU_GA/*.cu
 !GPU_GA/*.c
 !GPU_GA/*.h
