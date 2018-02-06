@@ -15,33 +15,61 @@
 #include <time.h>
 #include <stdlib.h>
 
+/*
+* MACROS
+*/
 //Random number on range [min,max] inclusive
 #define RANDGEN(min,max) (rand() % (max + 1 - min)) + min
 
-//Function declarations
+/*
+* FUNCTION PROTOTYPES
+*/
 void initialize_population();
+bool check_stopping_criteria(int[], int);
 void pause();
-
-//Globals
-bool population[INIT_POPULATION_SIZE][FULL_SIZE];
-int error[INIT_POPULATION_SIZE];
-int population_size = INIT_POPULATION_SIZE;
 
 int main()
 {
+	//Stores the individuals of the population and their respective states
+	//State is set to null if the protein is not used
+	bool population[INIT_POPULATION_SIZE][FULL_SIZE];
+
+	//Stores the errors of each individual resulting from simulation
+	int error[INIT_POPULATION_SIZE];
+
+	//The length of the population is stored separately so that the
+	//population can be cropped without creating a new population array
+	int population_size = INIT_POPULATION_SIZE;
+
+	int evolution = 0;
+
 	srand(time(NULL));
 
-	initialize_population();
+	initialize_population(population, population_size);
 
-	for (int i = 0; i < population_size; i++) {
-		error[i] = simulate(population[i]);
-	}
+	do {
+		for (int i = 0; i < population_size; i++) {
+			error[i] = simulate(population[i]);
+
+			//TODO sort population by increasing error
+
+			//Trim to top 20 individuals
+			population_size > 20 ? 20 : population_size;
+
+			//TODO GA stuff here
+		}
+
+		//Increment evolution counter
+		evolution++;
+	} while (check_stopping_criteria(error, population_size));
+
+	printf("Completed in %d evolutions\n", evolution);
 
 	pause();
     return 0;
 }
 
-void initialize_population() {
+void initialize_population(bool population[INIT_POPULATION_SIZE][FULL_SIZE], int population_size) {
 	//Cycle through each individual
 	for (int i = 0; i < population_size; i++) {
 		//Add the reduced rules in since those are
@@ -66,6 +94,16 @@ void initialize_population() {
 			population[i][rule] = PROTEINS[rule].init_val;
 		}
 	}
+}
+
+bool check_stopping_criteria(int error[], int population_size) {
+	for (int i = 0; i < population_size; i++) {
+		//Return false on any nonzero error
+		if (error[i] != 0) {
+			return false;
+		}
+	}
+	return true;
 }
 
 void pause() {
