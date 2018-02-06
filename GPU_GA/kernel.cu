@@ -41,21 +41,22 @@ int main()
 
 	//Trim to top 20 individuals
 	//TODO sort population by increasing error
-	for (int keep_indices = 0; keep_indices < INDIVIDUALS_TO_KEEP; keep_indices++) {
+	for (int keep_indices = 0; keep_indices < SURVIVORS; keep_indices++) {
 
 	}
 
 	do {
 		//TODO GA stuff here
+		modify(population);
 
 		//Cycle through each individual
-		for (int i = 0; i < INDIVIDUALS_TO_KEEP; i++) {
+		for (int i = 0; i < SURVIVORS; i++) {
 			error[i] = simulate(population[i]);			
 		}
 
 		//Increment evolution counter
 		evolution++;
-	} while (check_stopping_criteria(error, INDIVIDUALS_TO_KEEP));
+	} while (check_stopping_criteria(error, SURVIVORS));
 
 	printf("Completed in %d evolutions\n", evolution);
 

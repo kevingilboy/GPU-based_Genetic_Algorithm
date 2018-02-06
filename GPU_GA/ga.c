@@ -1,5 +1,5 @@
 //Random number on range [min,max] inclusive
-#define RANDGEN(min,max) (rand() % (max + 1 - min)) + min
+#define RANDINT(min,max) (rand() % (max + 1 - min)) + min
 
 void initialize_population(bool population[INIT_POPULATION_SIZE][FULL_SIZE]) {
 	//Cycle through each individual
@@ -19,13 +19,17 @@ void initialize_population(bool population[INIT_POPULATION_SIZE][FULL_SIZE]) {
 			//Select a unique rule on range [REDUCED_SIZE,FULL_SIZE)
 			int rule;
 			do {
-				rule = RANDGEN(REDUCED_SIZE, FULL_SIZE - 1);
+				rule = RANDINT(REDUCED_SIZE, FULL_SIZE - 1);
 			} while (population[i][rule] != NULL);
 
 			//Initialize the rule in the individual
 			population[i][rule] = PROTEINS[rule].init_val;
 		}
 	}
+}
+
+void modify(bool population[SURVIVORS][FULL_SIZE]) {
+	 
 }
 
 bool check_stopping_criteria(int error[], int population_size) {
