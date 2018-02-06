@@ -1,3 +1,6 @@
+//Random number on range [min,max] inclusive
+#define RANDGEN(min,max) (rand() % (max + 1 - min)) + min
+
 void initialize_population(bool population[INIT_POPULATION_SIZE][FULL_SIZE], int population_size) {
 	//Cycle through each individual
 	for (int i = 0; i < population_size; i++) {

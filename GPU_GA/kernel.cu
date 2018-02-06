@@ -1,4 +1,3 @@
-
 /*
  * Kevin Gilboy
  * GPU-ready main kernel
@@ -15,12 +14,6 @@
 #include "tcell.c"
 #include "simulator.c"
 #include "ga.c"
-
-/*
-* MACROS
-*/
-//Random number on range [min,max] inclusive
-#define RANDGEN(min,max) (rand() % (max + 1 - min)) + min
 
 /*
 * FUNCTION PROTOTYPES
