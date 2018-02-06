@@ -29,7 +29,27 @@ void initialize_population(bool population[INIT_POPULATION_SIZE][FULL_SIZE]) {
 }
 
 void modify(bool population[SURVIVORS][FULL_SIZE]) {
-	 
+	double r;
+
+	//Cycle through each individual
+	for (int i = 0; i < SURVIVORS; i++) {
+		//Decide to mutate, mate, reproduce
+		r = (double)rand() / RAND_MAX;
+		if (0 < r && r < P_MUTATE) {
+			//MUTATE!
+		}
+		else if (P_MUTATE < r && r < P_MATE + P_MUTATE) {
+			//MATE!
+		}
+	}
+}
+
+void mutate(bool individual[FULL_SIZE]) {
+
+}
+
+void mate(bool individual_1[FULL_SIZE], bool individual_2[FULL_SIZE]) {
+
 }
 
 bool check_stopping_criteria(int error[], int population_size) {
