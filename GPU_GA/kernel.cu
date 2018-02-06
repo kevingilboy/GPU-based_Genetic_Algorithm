@@ -11,7 +11,6 @@
 #include <stdlib.h>
 
 #include "params.h"
-#include "tcell.c"
 #include "simulator.c"
 #include "ga.c"
 
@@ -29,31 +28,34 @@ int main()
 	//Stores the errors of each individual resulting from simulation
 	int error[INIT_POPULATION_SIZE];
 
-	//The length of the population is stored separately so that the
-	//population can be cropped without creating a new population array
-	int population_size = INIT_POPULATION_SIZE;
-
 	int evolution = 0;
 
 	srand(time(NULL));
 
-	initialize_population(population, population_size);
+	initialize_population(population);
+
+	//Cycle through each individual
+	for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
+		error[i] = simulate(population[i]);
+	}
+
+	//Trim to top 20 individuals
+	//TODO sort population by increasing error
+	for (int keep_indices = 0; keep_indices < INDIVIDUALS_TO_KEEP; keep_indices++) {
+
+	}
 
 	do {
-		for (int i = 0; i < population_size; i++) {
-			error[i] = simulate(population[i]);
+		//TODO GA stuff here
 
-			//TODO sort population by increasing error
-
-			//Trim to top 20 individuals
-			population_size > 20 ? 20 : population_size;
-
-			//TODO GA stuff here
+		//Cycle through each individual
+		for (int i = 0; i < INDIVIDUALS_TO_KEEP; i++) {
+			error[i] = simulate(population[i]);			
 		}
 
 		//Increment evolution counter
 		evolution++;
-	} while (check_stopping_criteria(error, population_size));
+	} while (check_stopping_criteria(error, INDIVIDUALS_TO_KEEP));
 
 	printf("Completed in %d evolutions\n", evolution);
 
