@@ -8,9 +8,6 @@
  */
 #define STEPS 1500
 #define TRIALS 200
-#define RULES 61
-#define RULES_TO_REMOVE 8
-#define POOL_SIZE 32
 
 /**
  * GA CONSTANTS

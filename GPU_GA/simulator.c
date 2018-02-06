@@ -1,7 +1,9 @@
 /*
  * Kevin Gilboy
- * Simualtor
+ * Simulator
  */
 
-#include <stdio.h>
-#include "params.h"
+
+int simulate(bool state[]) {
+
+}
