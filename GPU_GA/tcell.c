@@ -1,8 +1,8 @@
 //Custom parameters
 //Pls touch
 #define FULL_SIZE 85
-#define TARGET_SIZE 61
-#define REDUCED_SIZE 53
+#define TARGET_RULES 61
+#define REDUCED_RULES 53
 
 //Calculated parameters and aliases
 //Pls don't touch
