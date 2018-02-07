@@ -77,10 +77,6 @@ void mate(bool *parent1, bool *parent2, bool *child, int individual_length) {
 }
 
 void reproduce(bool *parent, bool *child, int individual_length) {
-	clone_parent(parent, child, individual_length);
-}
-
-void clone_parent(bool *parent, bool *child, int individual_length) {
 	for (int i = 0; i < individual_length; i++) {
 		child[i] = parent[i];
 	}
