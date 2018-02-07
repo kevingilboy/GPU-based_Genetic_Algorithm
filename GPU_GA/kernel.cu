@@ -32,30 +32,33 @@ int main()
 
 	srand(time(NULL));
 
-	initialize_population(population);
+	//Create the initial population of size INIT_POPULATION_SIZE
+	initialize_population((bool **)population, INIT_POPULATION_SIZE, FULL_SIZE, REDUCED_RULES, TARGET_RULES);
 
 	//Cycle through each individual
 	for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
 		error[i] = simulate(population[i]);
 	}
 
-	//Trim to top 20 individuals
-	//TODO sort population by increasing error
-	for (int keep_indices = 0; keep_indices < SURVIVORS; keep_indices++) {
+	//Select the top SURVIVORS individuals
+	natural_selection((bool **)population, error, INIT_POPULATION_SIZE, FULL_SIZE, SURVIVORS);
 
-	}
+	do {	
+		//Duplicate SURVIVORS individuals to size TARGET_POPULATION_SIZE
+		proliferate((bool **)population, SURVIVORS, FULL_SIZE, TARGET_POPULATION_SIZE);
 
-	do {
-		//TODO GA stuff here
-		modify(population);
-
-		//Cycle through each individual
-		for (int i = 0; i < SURVIVORS; i++) {
+		//Simulate each TARGET_POPULATION_SIZE individual
+		for (int i = 0; i < TARGET_POPULATION_SIZE; i++) {
 			error[i] = simulate(population[i]);			
 		}
 
+		//Select the top SURVIVORS individuals
+		natural_selection((bool **)population, error, TARGET_POPULATION_SIZE, FULL_SIZE, SURVIVORS);
+
 		//Increment evolution counter
 		evolution++;
+
+		//Loop if any of the SURVIVORS individuals have nonzero error
 	} while (check_stopping_criteria(error, SURVIVORS));
 
 	printf("Completed in %d evolutions\n", evolution);
