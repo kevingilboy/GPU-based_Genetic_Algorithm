@@ -15,8 +15,8 @@
 #include "ga.c"
 
 /*
-* FUNCTION PROTOTYPES
-*/
+ * FUNCTION PROTOTYPES
+ */
 void pause();
 
 int main()
@@ -54,7 +54,7 @@ int main()
 
 		//Simulate each TARGET_POPULATION_SIZE individual
 		for (int i = 0; i < TARGET_POPULATION_SIZE; i++) {
-			individuals[i].error = simulate(population[i]);
+			individuals[i].error = simulate(individuals[i].addr);
 		}
 
 		//Select the top SURVIVORS individuals
