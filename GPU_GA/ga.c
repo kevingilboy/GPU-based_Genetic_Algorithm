@@ -1,13 +1,18 @@
 //Random number on range [min,max] inclusive
 #define RANDINT(min,max) (rand() % (max + 1 - min)) + min
 
-void initialize_population(bool** population, int population_size, int individual_length, int reduced_num_rules, int target_num_rules) {
+struct Individual {
+	int error;
+	bool* addr;
+};
+
+void initialize_population(bool **population, int population_size, int individual_length, int reduced_num_rules, int target_num_rules) {
 	//Cycle through each individual
 	for (int i = 0; i < population_size; i++) {
 		//Add the reduced rules in since those are
 		//present in every individual. Make the rest NULL
 		for (int j = 0; j < reduced_num_rules; j++) {
-			population[i][j] = PROTEINS[j].init_val;
+			population[i][j] = PROTEIN[j].init_val;
 		}
 		for (int j = reduced_num_rules; j < individual_length; j++) {
 			population[i][j] = NULL;
@@ -23,19 +28,17 @@ void initialize_population(bool** population, int population_size, int individua
 			} while (population[i][rule] != NULL);
 
 			//Initialize the rule in the individual
-			population[i][rule] = PROTEINS[rule].init_val;
+			population[i][rule] = PROTEIN[rule].init_val;
 		}
 	}
 }
 
-void natural_selection(bool** population, int* error, int current_population_size, int individual_length, int target_population_size) {
-	//TODO sort scores asc whilst sorting index
-	//TODO select top SURVIVORS
-	//TODO Sort index asc whilst sorting scores
-	//TODO Move rows into population(0:9) by cycling through population(survivor_indices(0:9))
+void natural_selection(Individual *individuals, int current_population_size, int individual_length, int target_population_size) {
+	//Sort individuals by asc error, therefore individuals[0:MU] are the best MU of the population
+	qsort(individuals, current_population_size, sizeof(Individual), cmp_error_asc);
 }
 
-void proliferate(bool** population, int current_population_size, int individual_length, int target_population_size) {
+void proliferate(Individual *individuals, int current_population_size, int individual_length, int target_population_size) {
 	double r;
 
 	//Cycle through each individual
@@ -43,12 +46,14 @@ void proliferate(bool** population, int current_population_size, int individual_
 		//Need MOD in case target_pop is not divisible by current_pop
 		int parent_index = i % current_population_size;
 		int child_index = current_population_size + i;
-		
+		bool * parent = individuals[parent_index].addr;
+		bool * child = individuals[child_index].addr;
+
 		//Decide to mutate, mate, reproduce
 		r = (double)rand() / RAND_MAX;
 		if (0 < r && r < P_MUTATE) {
 			//MUTATE!
-			mutate(population[parent_index], population[child_index], individual_length);
+			mutate(parent, child, individual_length);
 		}
 		else if (P_MUTATE < r && r < P_MATE + P_MUTATE) {
 			//MATE!
@@ -58,12 +63,13 @@ void proliferate(bool** population, int current_population_size, int individual_
 			do {
 				parent_2_index = RANDINT(0, current_population_size - 1);
 			} while (parent_2_index == parent_index);
+			bool * parent_2 = individuals[parent_2_index].addr;
 
-			mate(population[parent_index], population[parent_2_index], population[child_index], individual_length);
+			mate(parent, parent_2, child, individual_length);
 		}
 		else {
 			//REPRODUCE!
-			reproduce(population[parent_index], population[child_index], individual_length);
+			reproduce(parent, child, individual_length);
 		}
 	}
 }
@@ -82,12 +88,24 @@ void reproduce(bool *parent, bool *child, int individual_length) {
 	}
 }
 
-bool check_stopping_criteria(int *error, int error_size) {
+bool check_stopping_criteria(Individual *individuals, int error_size) {
 	for (int i = 0; i < error_size; i++) {
 		//Return false on any nonzero error
-		if (error[i] != 0) {
+		if (individuals[i].error != 0) {
 			return false;
 		}
 	}
 	return true;
+}
+
+int cmp_error_asc(const void *pa, const void *pb) {
+	//int *a = (int *)pa;
+	//int *b = (int *)pb;
+
+	int a = ((Individual *)pa)->error;
+	int b = ((Individual *)pb)->error;
+
+	if ( a < b ) return -1;
+	if ( a > b ) return +1;
+	return 0;
 }
