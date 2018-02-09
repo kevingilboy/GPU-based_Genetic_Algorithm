@@ -1,7 +1,20 @@
 //Random number on range [min,max] inclusive
 #define RANDINT(min,max) (rand() % (max + 1 - min)) + min
 
-struct Individual {
+/*
+* FUNCTION PROTOTYPES
+*/
+typedef struct Individual;
+void initialize_population(bool **population, int population_size, int individual_length, int reduced_num_rules, int target_num_rules);
+void natural_selection(Individual *individuals, int current_population_size, int individual_length, int target_population_size);
+void proliferate(Individual *individuals, int current_population_size, int individual_length, int target_population_size);
+void mutate(bool *parent, bool *child, int individual_length);
+void mate(bool *parent1, bool *parent2, bool *child, int individual_length);
+void reproduce(bool *parent, bool *child, int individual_length);
+bool check_stopping_criteria(Individual *individuals, int error_size);
+int cmp_error_asc(const void *pa, const void *pb);
+
+typedef struct Individual {
 	int error;
 	bool* addr;
 };
@@ -12,7 +25,7 @@ void initialize_population(bool **population, int population_size, int individua
 		//Add the reduced rules in since those are
 		//present in every individual. Make the rest NULL
 		for (int j = 0; j < reduced_num_rules; j++) {
-			population[i][j] = PROTEIN[j].init_val;
+			population[i][j] = 0; //No need to set init_val yet - PROTEIN[j].init_val;
 		}
 		for (int j = reduced_num_rules; j < individual_length; j++) {
 			population[i][j] = NULL;
@@ -28,7 +41,7 @@ void initialize_population(bool **population, int population_size, int individua
 			} while (population[i][rule] != NULL);
 
 			//Initialize the rule in the individual
-			population[i][rule] = PROTEIN[rule].init_val;
+			population[i][rule] = 0; //No need to set init_val yet - PROTEIN[rule].init_val;
 		}
 	}
 }
@@ -99,9 +112,6 @@ bool check_stopping_criteria(Individual *individuals, int error_size) {
 }
 
 int cmp_error_asc(const void *pa, const void *pb) {
-	//int *a = (int *)pa;
-	//int *b = (int *)pb;
-
 	int a = ((Individual *)pa)->error;
 	int b = ((Individual *)pb)->error;
 
