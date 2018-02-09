@@ -3,6 +3,7 @@
 #define FULL_SIZE 85
 #define TARGET_RULES 61
 #define REDUCED_RULES 53
+#define NUM_INITIAL_CONDITIONS 2
 
 //Calculated parameters and aliases
 //Pls don't touch
@@ -99,16 +100,17 @@
 
 struct Proteins {
 	char name[15];
-	bool init_val;
-	bool final_val;
+	bool init_val[NUM_INITIAL_CONDITIONS];
+	bool final_val[NUM_INITIAL_CONDITIONS];
 } PROTEIN[] = {
-	///NAME/////////INIT////FINAL///
-	{ "AKT",			false,	false	},
-	{ "AKT_OFF",		false,	false	},
-	{ "AP1",			false,	false	},
+	///NAME///////////////INIT/////////////FINAL///
+	{ "AKT",			{ false, false },{ false, false } },
+	{ "AKT_OFF",		{ false, false },{ false, false } },
+	{ "AP1",			{ false, false },{ false, false } },
+	//TODO FINISH
 };
 
-void run_rule(bool state[], int rule) {
+void run_rule(bool *state, int rule) {
 	switch (rule) {
 		case AKT:
 			state[AKT] = state[PDK1] || state[MTORC2];
@@ -118,6 +120,12 @@ void run_rule(bool state[], int rule) {
 		case AP1:
 			state[AP1] = state[FOS_DD] || state[JUN];
 			break;
+		//TODO FINISH
 	}
+}
+
+int calculate_error(bool *state) {
+	//TODO write
+	return 0;
 }
 
