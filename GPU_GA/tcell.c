@@ -110,6 +110,14 @@ struct Proteins {
 	//TODO FINISH
 };
 
+void initialize_state(bool *state, int init_condition_num) {
+	for (int i = 0; i < FULL_SIZE; i++) {
+		if (state[i] != NULL) {
+			state[i] = PROTEIN[i].init_val[init_condition_num];
+		}
+	}
+}
+
 void run_rule(bool *state, int rule) {
 	switch (rule) {
 		case AKT:
