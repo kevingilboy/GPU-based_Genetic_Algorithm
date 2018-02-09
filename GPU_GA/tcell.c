@@ -97,11 +97,11 @@
 #define D5			83
 #define D6			84
 
-struct protein {
+struct Proteins {
 	char name[15];
 	bool init_val;
 	bool final_val;
-} PROTEINS[] = {
+} PROTEIN[] = {
 	///NAME/////////INIT////FINAL///
 	{ "AKT",			false,	false	},
 	{ "AKT_OFF",		false,	false	},
