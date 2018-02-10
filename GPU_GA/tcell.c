@@ -509,14 +509,14 @@ void run_rule(char *state, int rule) {
 int calculate_error(double *avg_state, int init_condition_num) {
 	int error = 0;
 
-	if (init_condition_num = 0) { //TCR_HIGH
+	if (init_condition_num == 0) { //TCR_HIGH
 		if (avg_state[IL2] < 0.95) error += 1;
 		if (avg_state[FOXP3] > 0.05) error += 1;
 		if (avg_state[PTEN] > 0.05) error += 1;
 		if (avg_state[AKT] < 0.95) error += 1;
 		if (avg_state[MTORC1] < 0.95) error += 1;
 	}
-	else if (init_condition_num = 1) { //TCR_LOW
+	else if (init_condition_num == 1) { //TCR_LOW
 		if (avg_state[IL2] > 0.05) error += 1;
 		if (avg_state[FOXP3] < 0.95) error += 1;
 		if (avg_state[PTEN] < 0.95) error += 1;
@@ -524,6 +524,6 @@ int calculate_error(double *avg_state, int init_condition_num) {
 		if (avg_state[MTORC1] > 0.05) error += 1;
 	}
 	
-	return 0;
+	return error;
 }
 
