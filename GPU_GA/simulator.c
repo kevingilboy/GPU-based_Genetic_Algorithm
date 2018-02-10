@@ -7,7 +7,7 @@
 #define RANDRULE (rand() % (FULL_SIZE + 1))
 
 int simulate(char *state) {
-	double error = 0;
+	int error = 0;
 	double cumulative_state[FULL_SIZE];
 
 	for (int init_condition_num = 0; init_condition_num < NUM_INITIAL_CONDITIONS; init_condition_num++) {
@@ -40,6 +40,5 @@ int simulate(char *state) {
 		error += calculate_error(cumulative_state, init_condition_num);
 	}
 
-	int ceil_error = ceil(error);
-	return ceil_error;
+	return error;
 }
