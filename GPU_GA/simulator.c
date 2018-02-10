@@ -11,9 +11,9 @@ int simulate(char *state) {
 	double cumulative_state[FULL_SIZE];
 
 	for (int init_condition_num = 0; init_condition_num < NUM_INITIAL_CONDITIONS; init_condition_num++) {
-		initialize_state(state, init_condition_num);
-
 		for (int trial = 0; trial < TRIALS; trial++) {
+			initialize_state(state, init_condition_num);
+
 			//Run the trial
 			for (int step = 0; step < STEPS; step++) {
 				//Generate rule
