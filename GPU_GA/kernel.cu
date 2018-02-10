@@ -3,12 +3,13 @@
  * GPU-ready main kernel
  */
 
-#include "cuda_runtime.h"
-#include "device_launch_parameters.h"
+//#include "cuda_runtime.h"
+//#include "device_launch_parameters.h"
 
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "params.h"
 #include "simulator.c"
@@ -23,7 +24,7 @@ int main()
 {
 	//Stores the individuals of the population and their respective states
 	//State is set to null if the protein is not used
-	bool population[INIT_POPULATION_SIZE][FULL_SIZE];
+	char population[INIT_POPULATION_SIZE][FULL_SIZE];
 
 	//Stores the addr and errors of each individual resulting from simulation
 	struct Individual individuals[INIT_POPULATION_SIZE];
@@ -34,7 +35,7 @@ int main()
 	srand(time(NULL));
 
 	//Create the initial population of size INIT_POPULATION_SIZE
-	initialize_population((bool **)population, INIT_POPULATION_SIZE, FULL_SIZE, REDUCED_RULES, TARGET_RULES);
+	initialize_population(population, INIT_POPULATION_SIZE, REDUCED_RULES, TARGET_RULES);
 
 	//Cycle through each individual
 	for (int i = 0; i < INIT_POPULATION_SIZE; i++) {

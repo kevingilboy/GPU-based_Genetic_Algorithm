@@ -6,7 +6,7 @@
 #include <math.h>
 #define RANDRULE (rand() % (FULL_SIZE + 1))
 
-int simulate(bool state[]) {
+int simulate(char *state) {
 	double error = 0;
 
 	for (int init_condition_num = 0; init_condition_num < NUM_INITIAL_CONDITIONS; init_condition_num++) {
@@ -18,7 +18,7 @@ int simulate(bool state[]) {
 				int r;
 				do {
 					r = RANDRULE;
-				} while (state[r] == NULL);
+				} while (state[r] == -1);
 
 				run_rule(state, r);
 			}

@@ -4,31 +4,31 @@
 /*
 * FUNCTION PROTOTYPES
 */
-typedef struct Individual;
-void initialize_population(bool **population, int population_size, int individual_length, int reduced_num_rules, int target_num_rules);
+struct Individual;
+void initialize_population(char population[][FULL_SIZE], int population_size, int individual_length, int reduced_num_rules, int target_num_rules);
 void natural_selection(Individual *individuals, int current_population_size, int individual_length, int target_population_size);
 void proliferate(Individual *individuals, int current_population_size, int individual_length, int target_population_size);
-void mutate(bool *parent, bool *child, int individual_length);
-void mate(bool *parent1, bool *parent2, bool *child, int individual_length);
-void reproduce(bool *parent, bool *child, int individual_length);
+void mutate(char *parent, char *child, int individual_length);
+void mate(char *parent1, char *parent2, char *child, int individual_length);
+void reproduce(char *parent, char *child, int individual_length);
 bool check_stopping_criteria(Individual *individuals, int error_size);
 int cmp_error_asc(const void *pa, const void *pb);
 
-typedef struct Individual {
+struct Individual {
 	int error;
-	bool* addr;
+	char* addr;
 };
 
-void initialize_population(bool **population, int population_size, int individual_length, int reduced_num_rules, int target_num_rules) {
+void initialize_population(char population[][FULL_SIZE], int population_size, int reduced_num_rules, int target_num_rules) {
 	//Cycle through each individual
 	for (int i = 0; i < population_size; i++) {
 		//Add the reduced rules in since those are
-		//present in every individual. Make the rest NULL
+		//present in every individual. Make the rest -1
 		for (int j = 0; j < reduced_num_rules; j++) {
 			population[i][j] = 0; //No need to set init_val yet - PROTEIN[j].init_val;
 		}
-		for (int j = reduced_num_rules; j < individual_length; j++) {
-			population[i][j] = NULL;
+		for (int j = reduced_num_rules; j < FULL_SIZE; j++) {
+			population[i][j] = -1;
 		}
 
 		//Select TARGET_SIZE unique rules on the range
@@ -37,8 +37,8 @@ void initialize_population(bool **population, int population_size, int individua
 			//Select a unique rule on range [REDUCED_SIZE,FULL_SIZE)
 			int rule;
 			do {
-				rule = RANDINT(reduced_num_rules, individual_length - 1);
-			} while (population[i][rule] != NULL);
+				rule = RANDINT(reduced_num_rules, FULL_SIZE - 1);
+			} while (population[i][rule] != -1);
 
 			//Initialize the rule in the individual
 			population[i][rule] = 0; //No need to set init_val yet - PROTEIN[rule].init_val;
@@ -59,8 +59,8 @@ void proliferate(Individual *individuals, int current_population_size, int indiv
 		//Need MOD in case target_pop is not divisible by current_pop
 		int parent_index = i % current_population_size;
 		int child_index = current_population_size + i;
-		bool * parent = individuals[parent_index].addr;
-		bool * child = individuals[child_index].addr;
+		char * parent = individuals[parent_index].addr;
+		char * child = individuals[child_index].addr;
 
 		//Decide to mutate, mate, reproduce
 		r = (double)rand() / RAND_MAX;
@@ -76,7 +76,7 @@ void proliferate(Individual *individuals, int current_population_size, int indiv
 			do {
 				parent_2_index = RANDINT(0, current_population_size - 1);
 			} while (parent_2_index == parent_index);
-			bool * parent_2 = individuals[parent_2_index].addr;
+			char * parent_2 = individuals[parent_2_index].addr;
 
 			mate(parent, parent_2, child, individual_length);
 		}
@@ -87,15 +87,15 @@ void proliferate(Individual *individuals, int current_population_size, int indiv
 	}
 }
 
-void mutate(bool *parent, bool *child, int individual_length) {
+void mutate(char *parent, char *child, int individual_length) {
 	//TODO
 }
 
-void mate(bool *parent1, bool *parent2, bool *child, int individual_length) {
+void mate(char *parent1, char *parent2, char *child, int individual_length) {
 	//TODO
 }
 
-void reproduce(bool *parent, bool *child, int individual_length) {
+void reproduce(char *parent, char *child, int individual_length) {
 	for (int i = 0; i < individual_length; i++) {
 		child[i] = parent[i];
 	}

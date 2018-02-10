@@ -103,36 +103,36 @@ struct Proteins {
 	bool init_val[NUM_INITIAL_CONDITIONS];
 	bool final_val[NUM_INITIAL_CONDITIONS];
 } PROTEIN[] = {
-	///NAME///////////////INIT/////////////FINAL///
-	{ "AKT",			{ false, false },{ false, false } },
-	{ "AKT_OFF",		{ false, false },{ false, false } },
-	{ "AP1",			{ false, false },{ false, false } },
+	///NAME///////////INIT////////FINAL///
+	{ "AKT",			{ 0, 0 },	{ 0, 0 } },
+	{ "AKT_OFF",		{ 0, 0 },	{ 0, 0 } },
+	{ "AP1",			{ 0, 0 },	{ 0, 0 } },
 	//TODO FINISH
 };
 
-void initialize_state(bool *state, int init_condition_num) {
+void initialize_state(char *state, int init_condition_num) {
 	for (int i = 0; i < FULL_SIZE; i++) {
-		if (state[i] != NULL) {
+		if (state[i] != -1) {
 			state[i] = PROTEIN[i].init_val[init_condition_num];
 		}
 	}
 }
 
-void run_rule(bool *state, int rule) {
+void run_rule(char *state, int rule) {
 	switch (rule) {
 		case AKT:
-			state[AKT] = state[PDK1] || state[MTORC2];
-			break;
+			state[AKT] = state[PDK1] | state[MTORC2];
+			return;
 		case AKT_OFF:
-			break;
+			return;
 		case AP1:
-			state[AP1] = state[FOS_DD] || state[JUN];
-			break;
+			state[AP1] = state[FOS_DD] | state[JUN];
+			return;
 		//TODO FINISH
 	}
 }
 
-int calculate_error(bool *state) {
+int calculate_error(char *state) {
 	//TODO write
 	return 0;
 }
