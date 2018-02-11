@@ -22,6 +22,10 @@ void pause();
 
 int main()
 {
+	#ifdef STOPWATCH
+		time_t start_time = time(NULL);
+	#endif
+
 	//Stores the individuals of the population and their respective states
 	//State is set to null if the protein is not used
 	char population[INIT_POPULATION_SIZE][FULL_SIZE];
@@ -89,6 +93,11 @@ int main()
 	} while (!check_stopping_criteria(individuals));
 
 	printf("Completed in %d evolutions\n", evolution);
+
+	#ifdef STOPWATCH
+		time_t end_time = time(NULL);
+		printf("Runtime: %d sec\n", end_time - start_time);
+	#endif
 
 	pause();
     return 0;
