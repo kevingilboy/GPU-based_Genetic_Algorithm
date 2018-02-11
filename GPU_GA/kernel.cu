@@ -71,11 +71,18 @@ int main()
 		natural_selection(individuals, TARGET_POPULATION_SIZE);
 
 		#ifdef DEBUG
-			int error = 0;
-			for (int i = 0; i < SURVIVORS; i++) {
-				error += individuals[i].error;
-			}
-			printf("E_%d: Total error of %d\n\n", evolution, error);
+				int error = 0;
+				for (int i = 0; i < SURVIVORS; i++) {
+					for (int j = REDUCED_RULES; j < FULL_SIZE; j++) {
+						if (individuals[i].addr[j] != -1) {
+							printf("%s,", PROTEIN[j].name);
+						}
+					}
+					printf("\n");
+
+					error += individuals[i].error;
+				}
+				printf("E_%d: Total error of %d\n\n", evolution, error);
 		#endif
 
 		//Loop if any of the SURVIVORS individuals have nonzero error
