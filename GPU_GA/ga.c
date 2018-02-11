@@ -59,8 +59,8 @@ void proliferate(Individual *individuals) {
 		//Need MOD in case target_pop is not divisible by current_pop
 		int parent_index = i % SURVIVORS;
 		int child_index = SURVIVORS + i;
-		char * parent = individuals[parent_index].addr;
-		char * child = individuals[child_index].addr;
+		char *parent = individuals[parent_index].addr;
+		char *child = individuals[child_index].addr;
 
 		//Decide to mutate, mate, reproduce
 		r = (double)rand() / RAND_MAX;
@@ -83,6 +83,7 @@ void proliferate(Individual *individuals) {
 		else {
 			//REPRODUCE!
 			reproduce(parent, child);
+
 		}
 	}
 }
@@ -97,6 +98,9 @@ void mutate(char *parent, char *child) {
 
 	//Cycle through the extended rules
 	for (int i = REDUCED_RULES; i < FULL_SIZE; i++) {
+		//Might as well erase the child extension here
+		child[i] = -1;
+
 		//Continue if the rule is not activated
 		if (parent[i] == -1) continue;
 
@@ -112,9 +116,6 @@ void mutate(char *parent, char *child) {
 				indices_to_include[num_indices++] = i;
 			}
 		}
-
-		//Might as well erase the child extension here
-		child[i] = -1;
 	}
 
 	for (int i = 0; i < num_indices; i++) {

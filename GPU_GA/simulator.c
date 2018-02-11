@@ -8,9 +8,11 @@
 
 int simulate(char *state) {
 	int error = 0;
-	double cumulative_state[FULL_SIZE] = { 0 };
+	//double cumulative_state[FULL_SIZE];
 
 	for (int init_condition_num = 0; init_condition_num < NUM_INITIAL_CONDITIONS; init_condition_num++) {
+		double cumulative_state[FULL_SIZE] = { 0 };
+
 		for (int trial = 0; trial < TRIALS; trial++) {
 			initialize_state(state, init_condition_num);
 
@@ -33,7 +35,7 @@ int simulate(char *state) {
 
 		//Calculate average of each protein across all trials
 		for (int i = 0; i < FULL_SIZE; i++) {
-			cumulative_state[i] /= TRIALS;
+			cumulative_state[i] /= (double) TRIALS;
 		}
 
 		//Calculate error

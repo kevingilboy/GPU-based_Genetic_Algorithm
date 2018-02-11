@@ -338,10 +338,10 @@ void run_rule(char *state, int rule) {
 		case NFAT_OFF:
 			return;
 		case NFKAPPAB:
-			if (state[S2] != -1) {
+			if (state[U2] != -1) {
 				state[NFKAPPAB] = state[AKT] | state[PKCTHETA] | state[U2];
 			}
-			else if (state[S2] == -1) {
+			else if (state[U2] == -1) {
 				state[NFKAPPAB] = state[AKT] | state[PKCTHETA];
 			}
 			return;
