@@ -35,7 +35,7 @@ int main()
 	srand(time(NULL));
 
 	//Create the initial population of size INIT_POPULATION_SIZE
-	initialize_population(population, INIT_POPULATION_SIZE, REDUCED_RULES, TARGET_RULES);
+	initialize_population(population, INIT_POPULATION_SIZE);
 
 	//Cycle through each individual
 	for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
@@ -44,14 +44,14 @@ int main()
 	}
 
 	//Select the top SURVIVORS individuals
-	natural_selection(individuals, INIT_POPULATION_SIZE, FULL_SIZE, SURVIVORS);
+	natural_selection(individuals, INIT_POPULATION_SIZE);
 
 	//At somepoint, if population becomes an array of mallocs, I should free population[MU:end]
 	//However memory is not a major issue considering we only have a population of 300
 
 	do {	
 		//Duplicate SURVIVORS individuals to size TARGET_POPULATION_SIZE
-		proliferate(individuals, SURVIVORS, FULL_SIZE, TARGET_POPULATION_SIZE);
+		proliferate(individuals);
 
 		//Simulate each TARGET_POPULATION_SIZE individual
 		for (int i = 0; i < TARGET_POPULATION_SIZE; i++) {
@@ -59,13 +59,13 @@ int main()
 		}
 
 		//Select the top SURVIVORS individuals
-		natural_selection(individuals, TARGET_POPULATION_SIZE, FULL_SIZE, SURVIVORS);
+		natural_selection(individuals, TARGET_POPULATION_SIZE);
 
 		//Increment evolution counter
 		evolution++;
 
 		//Loop if any of the SURVIVORS individuals have nonzero error
-	} while (check_stopping_criteria(individuals, SURVIVORS));
+	} while (check_stopping_criteria(individuals));
 
 	printf("Completed in %d evolutions\n", evolution);
 

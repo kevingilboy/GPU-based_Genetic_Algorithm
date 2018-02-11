@@ -19,25 +19,25 @@ struct Individual {
 	char* addr;
 };
 
-void initialize_population(char population[][FULL_SIZE], int population_size, int reduced_num_rules, int target_num_rules) {
+void initialize_population(char population[][FULL_SIZE], int population_size) {
 	//Cycle through each individual
 	for (int i = 0; i < population_size; i++) {
 		//Add the reduced rules in since those are
 		//present in every individual. Make the rest -1
-		for (int j = 0; j < reduced_num_rules; j++) {
+		for (int j = 0; j < REDUCED_RULES; j++) {
 			population[i][j] = 0; //No need to set init_val yet - PROTEIN[j].init_val;
 		}
-		for (int j = reduced_num_rules; j < FULL_SIZE; j++) {
+		for (int j = REDUCED_RULES; j < FULL_SIZE; j++) {
 			population[i][j] = -1;
 		}
 
 		//Select TARGET_SIZE unique rules on the range
 		//[REDUCED_SIZE,FULL_SIZE) and initialize them
-		for (int j = 0; j < target_num_rules - reduced_num_rules; j++) {
+		for (int j = 0; j < TARGET_RULES - REDUCED_RULES; j++) {
 			//Select a unique rule on range [REDUCED_SIZE,FULL_SIZE)
 			int rule;
 			do {
-				rule = RANDINT(reduced_num_rules, FULL_SIZE - 1);
+				rule = RANDINT(REDUCED_RULES, FULL_SIZE - 1);
 			} while (population[i][rule] != -1);
 
 			//Initialize the rule in the individual
@@ -46,19 +46,19 @@ void initialize_population(char population[][FULL_SIZE], int population_size, in
 	}
 }
 
-void natural_selection(Individual *individuals, int current_population_size, int individual_length, int target_population_size) {
+void natural_selection(Individual *individuals, int current_population_size) {
 	//Sort individuals by asc error, therefore individuals[0:MU] are the best MU of the population
 	qsort(individuals, current_population_size, sizeof(Individual), cmp_error_asc);
 }
 
-void proliferate(Individual *individuals, int current_population_size, int individual_length, int target_population_size) {
+void proliferate(Individual *individuals) {
 	double r;
 
 	//Cycle through each individual
-	for (int i = 0; i < target_population_size - current_population_size; i++) {
+	for (int i = 0; i < TARGET_POPULATION_SIZE - SURVIVORS; i++) {
 		//Need MOD in case target_pop is not divisible by current_pop
-		int parent_index = i % current_population_size;
-		int child_index = current_population_size + i;
+		int parent_index = i % SURVIVORS;
+		int child_index = SURVIVORS + i;
 		char * parent = individuals[parent_index].addr;
 		char * child = individuals[child_index].addr;
 
@@ -66,7 +66,7 @@ void proliferate(Individual *individuals, int current_population_size, int indiv
 		r = (double)rand() / RAND_MAX;
 		if (0 < r && r < P_MUTATE) {
 			//MUTATE!
-			mutate(parent, child, individual_length);
+			mutate(parent, child);
 		}
 		else if (P_MUTATE < r && r < P_MATE + P_MUTATE) {
 			//MATE!
@@ -74,35 +74,36 @@ void proliferate(Individual *individuals, int current_population_size, int indiv
 			//Select a second parent
 			int parent_2_index;
 			do {
-				parent_2_index = RANDINT(0, current_population_size - 1);
+				parent_2_index = RANDINT(0, SURVIVORS - 1);
 			} while (parent_2_index == parent_index);
 			char * parent_2 = individuals[parent_2_index].addr;
 
-			mate(parent, parent_2, child, individual_length);
+			mate(parent, parent_2, child);
 		}
 		else {
 			//REPRODUCE!
-			reproduce(parent, child, individual_length);
+			reproduce(parent, child);
 		}
 	}
 }
 
-void mutate(char *parent, char *child, int individual_length) {
+void mutate(char *parent, char *child) {
+	//TODO
+	int rule_to_mutate;
+}
+
+void mate(char *parent1, char *parent2, char *child) {
 	//TODO
 }
 
-void mate(char *parent1, char *parent2, char *child, int individual_length) {
-	//TODO
-}
-
-void reproduce(char *parent, char *child, int individual_length) {
-	for (int i = 0; i < individual_length; i++) {
+void reproduce(char *parent, char *child) {
+	for (int i = 0; i < FULL_SIZE; i++) {
 		child[i] = parent[i];
 	}
 }
 
-bool check_stopping_criteria(Individual *individuals, int error_size) {
-	for (int i = 0; i < error_size; i++) {
+bool check_stopping_criteria(Individual *individuals) {
+	for (int i = 0; i < SURVIVORS; i++) {
 		//Return false on any nonzero error
 		if (individuals[i].error != 0) {
 			return false;

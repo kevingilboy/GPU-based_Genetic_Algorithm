@@ -22,3 +22,4 @@
 #define TARGET_POPULATION_SIZE 20 /*LAMBDA*/
 #define P_MUTATE 0.2
 #define P_MATE 0.3
+#define P_MUTATE_INDEX 0.2
