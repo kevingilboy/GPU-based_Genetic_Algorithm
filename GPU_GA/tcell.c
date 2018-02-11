@@ -8,7 +8,7 @@
 //Calculated parameters and aliases
 //Pls don't touch
 #define POOL_SIZE FULL_SIZE-REDUCED_SIZE
-#define EXTENSION_SIZE TARGET_RULES-REDUCED_RULES
+#define EXTENSION_RULES TARGET_RULES-REDUCED_RULES
 #define NOT(num) (num ^ 1)
 
 //REDUCED MODEL PROTEINS

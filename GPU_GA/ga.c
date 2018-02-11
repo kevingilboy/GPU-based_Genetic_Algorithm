@@ -33,7 +33,7 @@ void initialize_population(char population[][FULL_SIZE], int population_size) {
 
 		//Select TARGET_SIZE unique rules on the range
 		//[REDUCED_SIZE,FULL_SIZE) and initialize them
-		for (int j = 0; j < EXTENSION_SIZE; j++) {
+		for (int j = 0; j < EXTENSION_RULES; j++) {
 			//Select a unique rule on range [REDUCED_SIZE,FULL_SIZE)
 			int rule;
 			do {
@@ -92,7 +92,7 @@ void mutate(char *parent, char *child) {
 	int index;
 
 	//Store the extended rules for the child here
-	int indices_to_include[EXTENSION_SIZE];
+	int indices_to_include[EXTENSION_RULES];
 	int num_indices = 0;
 
 	//Cycle through the extended rules
@@ -124,7 +124,40 @@ void mutate(char *parent, char *child) {
 }
 
 void mate(char *parent1, char *parent2, char *child) {
-	//TODO
+	int index;
+
+	//Store the extended rules for the child here
+	int indices_to_include[EXTENSION_RULES];
+	int num_indices = 0;
+	
+	int p1_num_rules_passed = 0;
+	int p2_num_rules_passed = 0;
+
+	int p1_max_rule_to_keep = RANDINT(0, EXTENSION_RULES - 1);
+	int p2_min_rule_to_keep = p1_max_rule_to_keep;
+
+	for (int i = REDUCED_RULES; i < FULL_SIZE; i++) {
+		if (parent1[i] != -1) {
+			if (p1_num_rules_passed < p1_max_rule_to_keep) {
+				indices_to_include[num_indices++] = i;
+			}
+			p1_num_rules_passed++;
+		}
+		if (parent2[i] != -1) {
+			p2_num_rules_passed++;
+			if (p2_num_rules_passed > p2_min_rule_to_keep) {
+				indices_to_include[num_indices++] = i;
+			}	
+		}
+
+		//Might as well erase the child extension here
+		child[i] = -1;
+	}
+
+	for (int i = 0; i < num_indices; i++) {
+		index = indices_to_include[i];
+		child[index] = 0;
+	}
 }
 
 void reproduce(char *parent, char *child) {
