@@ -95,8 +95,11 @@ void mutate(char *parent, char *child) {
 	int indices_to_include[EXTENSION_SIZE];
 	int num_indices = 0;
 
-	//Cycle through each extended rule
+	//Cycle through the extended rules
 	for (int i = REDUCED_RULES; i < FULL_SIZE; i++) {
+		//Continue if the rule is not activated
+		if (parent[i] == -1) continue;
+
 		r = (double)rand() / RAND_MAX;
 
 		//If index selected to be mutated, add random rule to the array
