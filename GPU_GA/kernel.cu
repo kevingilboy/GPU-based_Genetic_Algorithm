@@ -35,37 +35,51 @@ int main()
 	srand(time(NULL));
 
 	//Create the initial population of size INIT_POPULATION_SIZE
+	DEBUG_PRINT(("E_%d: Initialization\n", evolution));
 	initialize_population(population, INIT_POPULATION_SIZE);
 
 	//Cycle through each individual
+	DEBUG_PRINT(("E_%d: Simulation\n", evolution));
 	for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
 		individuals[i].addr = population[i]; //Store the address
 		individuals[i].error = simulate(population[i]); //Store the error
 	}
 
 	//Select the top SURVIVORS individuals
+	DEBUG_PRINT(("E_%d: Natural Selection\n\n", evolution));
 	natural_selection(individuals, INIT_POPULATION_SIZE);
 
 	//At somepoint, if population becomes an array of mallocs, I should free population[MU:end]
 	//However memory is not a major issue considering we only have a population of 300
 
 	do {	
+		//Increment evolution counter
+		evolution++;
+
 		//Duplicate SURVIVORS individuals to size TARGET_POPULATION_SIZE
+		DEBUG_PRINT(("E_%d: Proliferation\n", evolution));
 		proliferate(individuals);
 
 		//Simulate each TARGET_POPULATION_SIZE individual
+		DEBUG_PRINT(("E_%d: Simulation\n", evolution));
 		for (int i = 0; i < TARGET_POPULATION_SIZE; i++) {
 			individuals[i].error = simulate(individuals[i].addr);
 		}
 
 		//Select the top SURVIVORS individuals
+		DEBUG_PRINT(("E_%d: Natural Selection\n", evolution));
 		natural_selection(individuals, TARGET_POPULATION_SIZE);
 
-		//Increment evolution counter
-		evolution++;
+		#ifdef DEBUG
+			int error = 0;
+			for (int i = 0; i < SURVIVORS; i++) {
+				error += individuals[i].error;
+			}
+			printf("E_%d: Total error of %d\n\n", evolution, error);
+		#endif
 
 		//Loop if any of the SURVIVORS individuals have nonzero error
-	} while (check_stopping_criteria(individuals));
+	} while (!check_stopping_criteria(individuals));
 
 	printf("Completed in %d evolutions\n", evolution);
 

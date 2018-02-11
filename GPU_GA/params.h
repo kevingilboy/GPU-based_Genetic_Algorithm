@@ -23,3 +23,17 @@
 #define P_MUTATE 0.2
 #define P_MATE 0.3
 #define P_MUTATE_INDEX 0.2
+
+/*
+ * DEBUGGING AND TIMING
+ */
+//Comment out STOPWATCH to remove the timer
+#define STOPWATCH 0
+
+//Comment out DEBUG to remove print statements
+#define DEBUG 0
+#ifdef DEBUG
+	#define DEBUG_PRINT(x) printf x
+#else
+	#define DEBUG_PRINT(x) do {} while (0)
+#endif
