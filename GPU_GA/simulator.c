@@ -8,7 +8,7 @@
 
 int simulate(char *state) {
 	int error = 0;
-	double cumulative_state[FULL_SIZE];
+	double cumulative_state[FULL_SIZE] = { 0 };
 
 	for (int init_condition_num = 0; init_condition_num < NUM_INITIAL_CONDITIONS; init_condition_num++) {
 		for (int trial = 0; trial < TRIALS; trial++) {
