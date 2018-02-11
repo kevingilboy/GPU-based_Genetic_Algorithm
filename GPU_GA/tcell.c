@@ -208,14 +208,20 @@ void run_rule(char *state, int rule) {
 	switch (rule) {
 		case AKT:
 			if (state[PDK1] != -1) {
-				state[AKT] = state[PDK1] & state[MTORC2] & NOT(state[AKT_OFF]);
+				state[AKT] = state[PDK1] & state[MTORC2];
+			}
+			else if (state[PDK1] == -1) {
+				state[AKT] = state[MTORC2] & NOT(state[AKT_OFF]);
 			}
 			return;
 		case AKT_OFF:
 			return;
 		case AP1:
-			if (state[AP1] != -1) {
+			if (state[JUN] != -1) {
 				state[AP1] = state[FOS_DD] & state[JUN];
+			}
+			else if (state[JUN] == -1) {
+				state[AP1] = state[FOS_DD];
 			}
 			return;
 		case CA:
@@ -226,7 +232,7 @@ void run_rule(char *state, int rule) {
 		case CD132:
 			return;
 		case CD25:
-			state[CD25] = state[FOXP3] | (state[AP1] & state[NFAT] & state[NFKAPPAB]) | state[JUN];
+			state[CD25] = state[FOXP3] | (state[AP1] & state[NFAT] & state[NFKAPPAB]) | state[STAT5];
 			return;
 		case CD28:
 			return;
@@ -266,7 +272,12 @@ void run_rule(char *state, int rule) {
 			state[IL2_EX] = state[IL2] | state[IL2_EX];
 			return;
 		case IL2R:
-			state[IL2R] = state[CD25] & state[CD122] & state[CD132];
+			if (state[CD132] != -1) {
+				state[IL2R] = state[CD25] & state[CD122] & state[CD132];
+			}
+			else if (state[CD132] == -1) {
+				state[IL2R] = state[CD25] & state[CD122];
+			}
 			return;
 		case JAK3:
 			state[JAK3] = state[IL2R] & state[IL2_EX];
@@ -278,7 +289,7 @@ void run_rule(char *state, int rule) {
 			state[JUN] = state[JNK];
 			return;
 		case MEK2:
-			if (state[MEK2] != -1) {
+			if (state[RAF] != -1) {
 				state[MEK2] = state[RAF];
 			}
 			return;
@@ -319,6 +330,9 @@ void run_rule(char *state, int rule) {
 		case NFAT:
 			if (state[CA] != -1) {
 				state[NFAT] = state[CA] & NOT(state[NFAT_OFF]);
+			}
+			else if (state[CA] == -1) {
+				state[NFAT] = NOT(state[NFAT_OFF]);
 			}
 			return;
 		case NFAT_OFF:
