@@ -190,10 +190,7 @@ struct Proteins {
 	{ "TGFBETA",		{ 0, 0 } },
 	{ "H10",			{ 0, 0 } },
 	{ "D5",			{ 0, 0 } },
-	{ "D6",			{ 0, 0 } },
-
-
-	//TODO FINISH
+	{ "D6",			{ 0, 0 } }
 };
 
 void initialize_state(char *state, int init_condition_num) {
@@ -266,7 +263,7 @@ void run_rule(char *state, int rule) {
 			}
 			return;
 		case IL2:
-			state[IL2] = ((state[AP1] & state[NFAT] & state[NFKAPPAB]) | IL2) & NOT(state[FOXP3]);
+			state[IL2] = ((state[AP1] & state[NFAT] & state[NFKAPPAB]) | state[IL2]) & NOT(state[FOXP3]);
 			return;
 		case IL2_EX:
 			state[IL2_EX] = state[IL2] | state[IL2_EX];
@@ -311,7 +308,10 @@ void run_rule(char *state, int rule) {
 			return;
 		case MTORC1:
 			if (state[RHEB] != -1) {
-				state[MTORC1] = state[RHEB] & NOT(MTORC1_OFF);
+				state[MTORC1] = state[RHEB];
+			}
+			else if (state[RHEB] == -1) {
+				state[MTORC1] = NOT(state[MTORC1_OFF]);
 			}
 			return;
 		case MTORC1_D:
