@@ -5,13 +5,13 @@
 * FUNCTION PROTOTYPES
 */
 struct Individual;
-void initialize_population(char population[][FULL_SIZE], int population_size, int individual_length, int reduced_num_rules, int target_num_rules);
-void natural_selection(Individual *individuals, int current_population_size, int individual_length, int target_population_size);
-void proliferate(Individual *individuals, int current_population_size, int individual_length, int target_population_size);
-void mutate(char *parent, char *child, int individual_length);
-void mate(char *parent1, char *parent2, char *child, int individual_length);
-void reproduce(char *parent, char *child, int individual_length);
-bool check_stopping_criteria(Individual *individuals, int error_size);
+void initialize_population(char population[][FULL_SIZE], int population_size);
+void natural_selection(Individual *individuals, int current_population_size);
+void proliferate(Individual *individuals);
+void mutate(char *parent, char *child);
+void mate(char *parent1, char *parent2, char *child);
+void reproduce(char *parent, char *child);
+bool check_stopping_criteria(Individual *individuals);
 int cmp_error_asc(const void *pa, const void *pb);
 
 struct Individual {
@@ -33,7 +33,7 @@ void initialize_population(char population[][FULL_SIZE], int population_size) {
 
 		//Select TARGET_SIZE unique rules on the range
 		//[REDUCED_SIZE,FULL_SIZE) and initialize them
-		for (int j = 0; j < TARGET_RULES - REDUCED_RULES; j++) {
+		for (int j = 0; j < EXTENSION_SIZE; j++) {
 			//Select a unique rule on range [REDUCED_SIZE,FULL_SIZE)
 			int rule;
 			do {
@@ -88,8 +88,36 @@ void proliferate(Individual *individuals) {
 }
 
 void mutate(char *parent, char *child) {
-	//TODO
-	int rule_to_mutate;
+	double r;
+	int index;
+
+	//Store the extended rules for the child here
+	int indices_to_include[EXTENSION_SIZE];
+	int num_indices = 0;
+
+	//Cycle through each extended rule
+	for (int i = REDUCED_RULES; i < FULL_SIZE; i++) {
+		r = (double)rand() / RAND_MAX;
+
+		//If index selected to be mutated, add random rule to the array
+		if (r < P_MUTATE_INDEX) {
+			indices_to_include[num_indices++] = RANDINT(REDUCED_RULES, FULL_SIZE - 1);
+		}
+		else {
+			//Else if not -1, add it to the array
+			if (parent[i] != -1) {
+				indices_to_include[num_indices++] = i;
+			}
+		}
+
+		//Might as well erase the child extension here
+		child[i] = -1;
+	}
+
+	for (int i = 0; i < num_indices; i++) {
+		index = indices_to_include[i];
+		child[index] = 0;
+	}
 }
 
 void mate(char *parent1, char *parent2, char *child) {
