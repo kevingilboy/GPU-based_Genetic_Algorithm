@@ -28,12 +28,22 @@
  * DEBUGGING AND TIMING
  */
 //Comment out STOPWATCH to remove the timer
-#define STOPWATCH 0
+#define CALC_PROGRAM_RUNTIME
+#define CALC_FUNCTION_RUNTIME
+
+#ifdef CALC_FUNCTION_RUNTIME
+	#define START_TIMER	timer = clock();
+	#define END_TIMER printf("\t Completion time: %.3f sec\n\n", (double)((double)(clock()-timer) / CLOCKS_PER_SEC));
+#else
+	#define START_TIMER  do {} while (0);
+	#define END_TIMER  do {} while (0);
+#endif
 
 //Comment out DEBUG to remove print statements
-#define DEBUG 0
+#define DEBUG
+
 #ifdef DEBUG
-	#define DEBUG_PRINT(x) printf x
+	#define DEBUG_PRINT(x) printf x;
 #else
-	#define DEBUG_PRINT(x) do {} while (0)
+	#define DEBUG_PRINT(x) do {} while (0);
 #endif

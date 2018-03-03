@@ -103,7 +103,6 @@
 struct Proteins {
 	char name[15];
 	bool init_val[NUM_INITIAL_CONDITIONS];
-	bool final_val[NUM_INITIAL_CONDITIONS];
 } PROTEIN[] = {
 	///NAME///////////INIT////
 	{ "AKT",			{ 0, 0 } },
