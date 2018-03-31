@@ -55,7 +55,8 @@ int main()
 #ifdef GPU
 		cudaError_t cudaStatus;
 		char *gpu_individuals;
-		size_t pitch;
+		float *cum_state;
+		size_t pitch, pitch2;
 
 		// Choose which GPU to run on, change this on a multi-GPU system.
 		cudaStatus = cudaSetDevice(0);
@@ -66,14 +67,15 @@ int main()
 		}
 
 		cudaMallocPitch((void**) &gpu_individuals, &pitch, FULL_SIZE * sizeof(char), INIT_POPULATION_SIZE);
+		cudaMallocPitch((void**)&cum_state, &pitch2, FULL_SIZE * sizeof(float), INIT_POPULATION_SIZE);
 		cudaMemcpy2D(gpu_individuals, pitch, population, FULL_SIZE * sizeof(char), FULL_SIZE * sizeof(char), INIT_POPULATION_SIZE, cudaMemcpyHostToDevice);
 
 		int *gpu_error;
 		cudaMalloc((void**)&gpu_error, sizeof(int)*INIT_POPULATION_SIZE);
 
 		int threads_per_block = 128;
-		int blocks_per_grid = 300 / threads_per_block;
-		simulate_parallel<<<blocks_per_grid, threads_per_block>>>(gpu_individuals, gpu_error, pitch, time(NULL)); //Store the error
+		int blocks_per_grid = 300*200 / threads_per_block;
+		simulate_parallel<<<blocks_per_grid, threads_per_block>>>(gpu_individuals, cum_state, pitch, pitch2, time(NULL)); //Store the error
 
 		// Check for any errors launching the kernel
 		cudaStatus = cudaGetLastError();
@@ -92,12 +94,13 @@ int main()
 			exit(-1);
 		}
 
-		for (int r = 0; r < INIT_POPULATION_SIZE; ++r) {
-			int *row = (int*)((int*)gpu_error + r * pitch);
-			int e = 0;
-			cudaMemcpy(&e, row, sizeof(int) * INIT_POPULATION_SIZE, cudaMemcpyDeviceToHost);
-			printf("%d\n", e);
-		}
+		//for (int r = 0; r < INIT_POPULATION_SIZE; ++r) {
+			//int *row = (int*)((float*)cum_state + r * pitch2);
+			float hostPtr[300][FULL_SIZE];
+			//cudaMemcpy(&e, row, sizeof(int) * INIT_POPULATION_SIZE, cudaMemcpyDeviceToHost);
+			cudaMemcpy2D(hostPtr, FULL_SIZE * sizeof(float), cum_state, pitch, FULL_SIZE * sizeof(float), 300, cudaMemcpyDeviceToHost);
+			//printf("%d\n", e);
+		//}
 		printf("Done");
 		pause();
 		exit(0);

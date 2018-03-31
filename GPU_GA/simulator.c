@@ -65,21 +65,22 @@ void test(char* c) {
 }
 
 __global__
-void simulate_parallel(char *gpu_individuals, int *gpu_error, int pitch, unsigned int seed) {
+void simulate_parallel(char *gpu_individuals, float *cum_state, int pitch, int pitch2, unsigned int seed) {
 	int index = blockDim.x * blockIdx.x + threadIdx.x;
-	char *state = (char*)((char*)gpu_individuals + index * pitch);
-	//printf("%d\n", index);
-	int error = 0;
+	int individual_index = index / 200;
+	int trial = index - (individual_index * 200);
+
+	char *state = (char*)((char*)gpu_individuals + individual_index * pitch);
+	float *cumulative_state = (float*)((float*)cum_state + individual_index * pitch2);
+
 	curandState_t rand;
 	curand_init(seed, // the seed controls the sequence of random values that are produced 
 		0, // the sequence number is only important with multiple cores 
 		0, // the offset is how much extra we advance in the sequence for each call, can be 0 
 		&rand);
-	
-	for (int init_condition_num = 0; init_condition_num < NUM_INITIAL_CONDITIONS; init_condition_num++) {
-		float cumulative_state[FULL_SIZE] = { 0 };
+	int init_condition_num = 0;
+	//for (int init_condition_num = 0; init_condition_num < NUM_INITIAL_CONDITIONS; init_condition_num++) {
 
-		for (int trial = 0; trial < TRIALS; trial++) {
 			//initialize_state(state, init_condition_num);
 			for (int i = 0; i < FULL_SIZE; i++) {
 				if (state[i] != -1) {
@@ -100,22 +101,10 @@ void simulate_parallel(char *gpu_individuals, int *gpu_error, int pitch, unsigne
 			//Trial finished, add to cumulative state for all trials
 			for (int i = 0; i < FULL_SIZE; i++) {
 				//Should I check if state is -1 here? Shouldnt matter...
-				cumulative_state[i] += state[i];
+				cumulative_state[i] += (state[i]/(float)TRIALS);
 			}
-			printf("%d: %d: %d\n\n", index, init_condition_num, trial);
-		}
-
-		//Calculate average of each protein across all trials
-		for (int i = 0; i < FULL_SIZE; i++) {
-			cumulative_state[i] /= (float)TRIALS;
-			printf("%f ", cumulative_state[i]);
-		}
-		printf("\n");
-
-		//Calculate error
-		error += calculate_error(cumulative_state, init_condition_num);
-	}
-	
-	gpu_error[index] = error;
+			printf("%d: %d: %d\n\n", individual_index, init_condition_num, trial);
+		
+	//}
 }
 #endif
