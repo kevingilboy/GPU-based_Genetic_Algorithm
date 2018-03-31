@@ -115,7 +115,7 @@ void simulate_parallel(char *gpu_individuals, int *gpu_error, int pitch, unsigne
 		//Calculate error
 		error += calculate_error(cumulative_state, init_condition_num);
 	}
-	printf("%d\n", error);
+	
 	gpu_error[index] = error;
 }
 #endif
