@@ -11,7 +11,7 @@ void simulate(Individual *individual) {
 	int error = 0;
 
 	for (int init_condition_num = 0; init_condition_num < NUM_INITIAL_CONDITIONS; init_condition_num++) {
-		double cumulative_state[FULL_SIZE] = { 0 };
+		float cumulative_state[FULL_SIZE] = { 0 };
 
 		for (int trial = 0; trial < TRIALS; trial++) {
 			initialize_state(state, init_condition_num);
@@ -35,7 +35,7 @@ void simulate(Individual *individual) {
 
 		//Calculate average of each protein across all trials
 		for (int i = 0; i < FULL_SIZE; i++) {
-			cumulative_state[i] /= (double) TRIALS;
+			cumulative_state[i] /= (float) TRIALS;
 		}
 
 		//Calculate error
@@ -66,7 +66,7 @@ void test(char* c) {
 
 __global__
 void simulate_parallel(char *gpu_individuals, int *gpu_error, int pitch, unsigned int seed) {
-	int index = blockDim.x*blockIdx.x + threadIdx.x;
+	int index = blockDim.x * blockIdx.x + threadIdx.x;
 	char *state = (char*)((char*)gpu_individuals + index * pitch);
 	//printf("%d\n", index);
 	int error = 0;
@@ -75,9 +75,9 @@ void simulate_parallel(char *gpu_individuals, int *gpu_error, int pitch, unsigne
 		0, // the sequence number is only important with multiple cores 
 		0, // the offset is how much extra we advance in the sequence for each call, can be 0 
 		&rand);
-
+	
 	for (int init_condition_num = 0; init_condition_num < NUM_INITIAL_CONDITIONS; init_condition_num++) {
-		double cumulative_state[FULL_SIZE] = { 0 };
+		float cumulative_state[FULL_SIZE] = { 0 };
 
 		for (int trial = 0; trial < TRIALS; trial++) {
 			//initialize_state(state, init_condition_num);
@@ -102,13 +102,15 @@ void simulate_parallel(char *gpu_individuals, int *gpu_error, int pitch, unsigne
 				//Should I check if state is -1 here? Shouldnt matter...
 				cumulative_state[i] += state[i];
 			}
-			printf("%d: %d: %d\n", index, init_condition_num, trial);
+			printf("%d: %d: %d\n\n", index, init_condition_num, trial);
 		}
 
 		//Calculate average of each protein across all trials
 		for (int i = 0; i < FULL_SIZE; i++) {
-			cumulative_state[i] /= (double)TRIALS;
+			cumulative_state[i] /= (float)TRIALS;
+			printf("%f ", cumulative_state[i]);
 		}
+		printf("\n");
 
 		//Calculate error
 		error += calculate_error(cumulative_state, init_condition_num);

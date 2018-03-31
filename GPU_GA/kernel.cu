@@ -71,8 +71,8 @@ int main()
 		int *gpu_error;
 		cudaMalloc((void**)&gpu_error, sizeof(int)*INIT_POPULATION_SIZE);
 
-		int threads_per_block = 128;
-		int blocks_per_grid = 300 / threads_per_block;
+		int threads_per_block = 1;//128;
+		int blocks_per_grid = 1;//300 / threads_per_block;
 		simulate_parallel<<<blocks_per_grid, threads_per_block>>>(gpu_individuals, gpu_error, pitch, time(NULL)); //Store the error
 
 		// Check for any errors launching the kernel
@@ -99,6 +99,8 @@ int main()
 			printf("%d\n", e);
 		}
 		printf("Done");
+		pause();
+		exit(0);
 	#else
 		for (int i = 0; i < INIT_POPULATION_SIZE; i++) {
 			simulate(&individuals[i]); //Store the error

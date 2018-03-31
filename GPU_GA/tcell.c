@@ -533,22 +533,22 @@ void run_rule(char *state, int rule) {
 #ifdef GPU
 __host__ __device__
 #endif
-int calculate_error(double *avg_state, int init_condition_num) {
-	int error = 0;
+int calculate_error(float *avg_state, int init_condition_num) {
+	int error;
 
 	if (init_condition_num == 0) { //TCR_HIGH
-		if (avg_state[IL2] < 0.95) error += 1;
-		if (avg_state[FOXP3] > 0.05) error += 1;
-		if (avg_state[PTEN] > 0.05) error += 1;
-		if (avg_state[AKT] < 0.95) error += 1;
-		if (avg_state[MTORC1] < 0.95) error += 1;
+		error = (avg_state[IL2] < 0.95) +
+			(avg_state[FOXP3] > 0.05) +
+			(avg_state[PTEN] > 0.05) +
+			(avg_state[AKT] < 0.95) +
+			(avg_state[MTORC1] < 0.95);
 	}
 	else if (init_condition_num == 1) { //TCR_LOW
-		if (avg_state[IL2] > 0.05) error += 1;
-		if (avg_state[FOXP3] < 0.95) error += 1;
-		if (avg_state[PTEN] < 0.95) error += 1;
-		if (avg_state[AKT] > 0.05) error += 1;
-		if (avg_state[MTORC1] > 0.05) error += 1;
+		error = (avg_state[IL2] > 0.05) +
+			(avg_state[FOXP3] < 0.95) +
+			(avg_state[PTEN] < 0.95) +
+			(avg_state[AKT] > 0.05) +
+			(avg_state[MTORC1] > 0.05);
 	}
 	
 	return error;
