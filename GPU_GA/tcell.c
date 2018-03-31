@@ -103,7 +103,11 @@
 struct Proteins {
 	char name[15];
 	bool init_val[NUM_INITIAL_CONDITIONS];
-} PROTEIN[] = {
+} 
+#ifdef GPU
+__device__
+#endif
+PROTEIN[] = {
 	///NAME///////////INIT////
 	{ "AKT",			{ 0, 0 } },
 	{ "AKT_OFF",		{ 0, 0 } },
@@ -192,6 +196,9 @@ struct Proteins {
 	{ "D6",			{ 0, 0 } }
 };
 
+#ifdef GPU
+__host__ __device__
+#endif
 void initialize_state(char *state, int init_condition_num) {
 	for (int i = 0; i < FULL_SIZE; i++) {
 		if (state[i] != -1) {
@@ -200,6 +207,9 @@ void initialize_state(char *state, int init_condition_num) {
 	}
 }
 
+#ifdef GPU
+__host__ __device__
+#endif
 void run_rule(char *state, int rule) {
 	switch (rule) {
 		case AKT:
@@ -520,6 +530,9 @@ void run_rule(char *state, int rule) {
 	}
 }
 
+#ifdef GPU
+__host__ __device__
+#endif
 int calculate_error(double *avg_state, int init_condition_num) {
 	int error = 0;
 

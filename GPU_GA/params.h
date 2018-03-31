@@ -3,6 +3,11 @@
  * Constants and macros used across the project
  */
 
+ /*
+ * TYPE OF SIMULATION
+ */
+#define GPU
+
 /*
  * PROTEINS AND RULES FILE
  */
