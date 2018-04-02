@@ -92,11 +92,11 @@ int main()
 			exit(-1);
 		}
 
-		for (int r = 0; r < INIT_POPULATION_SIZE; ++r) {
-			int *row = (int*)((int*)gpu_error + r * pitch);
+		for (int r = 0; r < INIT_POPULATION_SIZE; r++) {
+			int *row = (int*)((int*)gpu_error + r * sizeof(int));
 			int e = 0;
 			cudaMemcpy(&e, row, sizeof(int) * INIT_POPULATION_SIZE, cudaMemcpyDeviceToHost);
-			printf("%d\n", e);
+			printf("%d ", e);
 		}
 		printf("Done");
 	#else
@@ -105,6 +105,7 @@ int main()
 		}
 	#endif
 	END_TIMER
+		pause();
 
 	//Select the top SURVIVORS individuals
 	DEBUG_PRINT(("E_%d: Natural Selection\n\n", evolution));

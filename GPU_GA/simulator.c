@@ -68,7 +68,7 @@ __global__
 void simulate_parallel(char *gpu_individuals, int *gpu_error, int pitch, unsigned int seed) {
 	int index = blockDim.x*blockIdx.x + threadIdx.x;
 	char *state = (char*)((char*)gpu_individuals + index * pitch);
-	//printf("%d\n", index);
+	
 	int error = 0;
 	curandState_t rand;
 	curand_init(seed, // the seed controls the sequence of random values that are produced 
@@ -102,7 +102,7 @@ void simulate_parallel(char *gpu_individuals, int *gpu_error, int pitch, unsigne
 				//Should I check if state is -1 here? Shouldnt matter...
 				cumulative_state[i] += state[i];
 			}
-			printf("%d: %d: %d\n", index, init_condition_num, trial);
+			//printf("%d: %d: %d\n", index, init_condition_num, trial);
 		}
 
 		//Calculate average of each protein across all trials
@@ -113,7 +113,6 @@ void simulate_parallel(char *gpu_individuals, int *gpu_error, int pitch, unsigne
 		//Calculate error
 		error += calculate_error(cumulative_state, init_condition_num);
 	}
-	printf("%d\n", error);
 	gpu_error[index] = error;
 }
 #endif
